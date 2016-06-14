@@ -5,7 +5,7 @@ import (
 	"io/ioutil"
 	"strings"
 
-	"git.hcr.io/cynexit/holmes-api/context"
+	"github.com/HolmesProcessing/Holmes-Presentation/context"
 
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/gocql/gocql"

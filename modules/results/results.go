@@ -5,7 +5,7 @@ import (
 	"strings"
 	"time"
 
-	"git.hcr.io/cynexit/holmes-api/context"
+	"github.com/HolmesProcessing/Holmes-Presentation/context"
 
 	"github.com/gocql/gocql"
 )

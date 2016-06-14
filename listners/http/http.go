@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"git.hcr.io/cynexit/holmes-api/context"
-	"git.hcr.io/cynexit/holmes-api/router"
+	"github.com/HolmesProcessing/Holmes-Presentation/context"
+	"github.com/HolmesProcessing/Holmes-Presentation/router"
 )
 
 var (

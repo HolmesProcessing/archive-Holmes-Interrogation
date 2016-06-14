@@ -10,8 +10,8 @@ import (
 	"strconv"
 	"time"
 
-	"git.hcr.io/cynexit/holmes-api/context"
-	"git.hcr.io/cynexit/holmes-api/listners/http"
+	"github.com/HolmesProcessing/Holmes-Presentation/context"
+	"github.com/HolmesProcessing/Holmes-Presentation/listners/http"
 
 	"github.com/gocql/gocql"
 

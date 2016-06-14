@@ -3,10 +3,10 @@ package router
 import (
 	"encoding/json"
 
-	"git.hcr.io/cynexit/holmes-api/context"
-	"git.hcr.io/cynexit/holmes-api/modules/objects"
-	"git.hcr.io/cynexit/holmes-api/modules/results"
-	"git.hcr.io/cynexit/holmes-api/modules/submissions"
+	"github.com/HolmesProcessing/Holmes-Presentation/context"
+	"github.com/HolmesProcessing/Holmes-Presentation/modules/objects"
+	"github.com/HolmesProcessing/Holmes-Presentation/modules/results"
+	"github.com/HolmesProcessing/Holmes-Presentation/modules/submissions"
 )
 
 var (
