@@ -1,0 +1,44 @@
+{
+    "Storage": "cassandra",
+    "Database": [{
+        "IP":       "10.0.4.80",
+        "Port":     9042,
+        "User":     "username",
+        "Password": "password",
+        "Database": "holmes"
+        }, {
+        "IP":       "10.0.4.81",
+        "Port":     9042,
+        "User":     "username",
+        "Password": "password",
+        "Database": "holmes"
+        }, {
+        "IP":       "10.0.4.82",
+        "Port":     9042,
+        "User":     "username",
+        "Password": "password",
+        "Database": "holmes"
+        }
+    ],
+    "ObjStorage": "S3",
+    "ObjDatabase": [{
+        "IP":       "10.0.4.50",
+        "Port":     8080,
+        "Region":   "US",
+        "Key":      "KEYSTRING",
+        "Secret":   "SECRETSTRING",
+        "Bucket":   "samples",
+        "DisableSSL":   false
+        }
+    ],
+
+    "LogFile": "",
+    "LogLevel": "debug",
+
+    "AMQP": "amqp://user:password@10.0.4.62:5672",
+    "Queue": "holmes_api",
+    "RoutingKey": "*.holmes.api",
+    "PrefetchCount": 10,
+
+    "HTTP": ":8018"
+}
