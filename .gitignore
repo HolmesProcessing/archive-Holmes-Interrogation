@@ -2,7 +2,7 @@
 *.o
 *.a
 *.so
-Holmes-Storage
+Holmes-Presentation
 
 # Folders
 _obj
