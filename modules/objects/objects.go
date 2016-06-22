@@ -5,7 +5,7 @@ import (
 	"io/ioutil"
 	"strings"
 
-	"github.com/HolmesProcessing/Holmes-Presentation/context"
+	"github.com/HolmesProcessing/Holmes-Interrogation/context"
 
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/gocql/gocql"
