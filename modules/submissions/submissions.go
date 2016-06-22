@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/HolmesProcessing/Holmes-Presentation/context"
+	"github.com/HolmesProcessing/Holmes-Interrogation/context"
 
 	"github.com/gocql/gocql"
 )

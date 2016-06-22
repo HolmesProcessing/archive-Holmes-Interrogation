@@ -5,7 +5,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/HolmesProcessing/Holmes-Presentation/context"
+	"github.com/HolmesProcessing/Holmes-Interrogation/context"
 
 	"github.com/gocql/gocql"
 )
@@ -93,8 +93,12 @@ func Get(c *context.Ctx, parametersRaw *json.RawMessage) *context.Response {
 }
 
 type SearchParameters struct {
-	SHA256      string `json:"sha256"`
-	ServiceName string `json:"service_name"`
+	SHA256        string `json:"sha256"`
+	ServiceName   string `json:"service_name"`
+	StartedStart  string `json:"started_start"`
+	StartedStop   string `json:"started_stop"`
+	FinishedStart string `json:"finished_start"`
+	FinishedStop  string `json:"finished_stop"`
 }
 
 func Search(c *context.Ctx, parametersRaw *json.RawMessage) *context.Response {
@@ -104,18 +108,42 @@ func Search(c *context.Ctx, parametersRaw *json.RawMessage) *context.Response {
 		return &context.Response{Error: err.Error()}
 	}
 
-	if p.SHA256 == "" {
-		return &context.Response{Error: "SHA256 is needed!"}
-	}
-
-	// since there is only an index on the SHA256
-	// we need to cycle trough everything to filter
-	// for other fields...
 	results := []*Result{}
 	result := &Result{}
 
+	var whereStmt []string
+	var whereStmtValues []interface{}
+
+	if p.SHA256 != "" {
+		whereStmt = append(whereStmt, "sha256 = ?")
+		whereStmtValues = append(whereStmtValues, strings.ToUpper(p.SHA256))
+	}
+
+	if p.ServiceName != "" {
+		whereStmt = append(whereStmt, "service_name = ?")
+		whereStmtValues = append(whereStmtValues, p.ServiceName)
+	}
+
+	if p.StartedStart != "" && p.StartedStop != "" {
+		whereStmt = append(whereStmt, "started_date_time >= ? AND started_date_time <= ?")
+		whereStmtValues = append(whereStmtValues, p.StartedStart)
+		whereStmtValues = append(whereStmtValues, p.StartedStop)
+	}
+
+	if p.FinishedStart != "" && p.FinishedStop != "" {
+		whereStmt = append(whereStmt, "finished_date_time >= ? AND finished_date_time <= ?")
+		whereStmtValues = append(whereStmtValues, p.FinishedStart)
+		whereStmtValues = append(whereStmtValues, p.FinishedStop)
+	}
+
+	where := ""
+	if len(whereStmt) > 0 {
+		where = " WHERE "
+		where += strings.Join(whereStmt, " AND ")
+	}
+
 	// TODO: fix results, make everything lower case and revisit this statement
-	q := c.C.Query("SELECT id, sha256, service_name, tags, started_date_time, finished_date_time FROM results WHERE sha256 = ?", strings.ToUpper(p.SHA256))
+	q := c.C.Query("SELECT id, sha256, service_name, tags, started_date_time, finished_date_time FROM results"+where, whereStmtValues...)
 
 	iter := q.Iter()
 	for iter.Scan(
@@ -126,11 +154,6 @@ func Search(c *context.Ctx, parametersRaw *json.RawMessage) *context.Response {
 		&result.StartedDateTime,
 		&result.FinishedDateTime,
 	) {
-		if p.ServiceName != "" && result.ServiceName != p.ServiceName {
-			result = &Result{}
-			continue
-		}
-
 		results = append(results, result)
 		result = &Result{}
 	}
