@@ -1,4 +1,4 @@
-# Holmes-Interrogation: An Interrogation Planner for Holmes Processing
+# Holmes-Interrogation: An Interrogation Planner for Holmes Processing [![Build Status](https://travis-ci.org/HolmesProcessing/Holmes-Interrogation.svg?branch=master)](https://travis-ci.org/HolmesProcessing/Holmes-Interrogation)
 
 ## Overview 
 
