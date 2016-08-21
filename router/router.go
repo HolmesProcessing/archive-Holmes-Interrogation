@@ -3,10 +3,10 @@ package router
 import (
 	"encoding/json"
 
-	"github.com/HolmesProcessing/Holmes-Interrogation/context"
-	"github.com/HolmesProcessing/Holmes-Interrogation/modules/objects"
-	"github.com/HolmesProcessing/Holmes-Interrogation/modules/results"
-	"github.com/HolmesProcessing/Holmes-Interrogation/modules/submissions"
+	"github.com/cynexit/Holmes-Interrogation/context"
+	"github.com/cynexit/Holmes-Interrogation/modules/objects"
+	"github.com/cynexit/Holmes-Interrogation/modules/results"
+	"github.com/cynexit/Holmes-Interrogation/modules/submissions"
 )
 
 var (

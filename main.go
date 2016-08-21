@@ -10,8 +10,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/HolmesProcessing/Holmes-Interrogation/context"
-	"github.com/HolmesProcessing/Holmes-Interrogation/listners/http"
+	"github.com/cynexit/Holmes-Interrogation/context"
+	"github.com/cynexit/Holmes-Interrogation/listners/http"
 
 	"github.com/gocql/gocql"
 

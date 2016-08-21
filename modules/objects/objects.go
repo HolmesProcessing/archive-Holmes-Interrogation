@@ -3,12 +3,12 @@ package objects
 import (
 	"encoding/json"
 	"io/ioutil"
+	"strconv"
 	"strings"
 
-	"github.com/HolmesProcessing/Holmes-Interrogation/context"
+	"github.com/cynexit/Holmes-Interrogation/context"
 
 	"github.com/aws/aws-sdk-go/service/s3"
-	"github.com/gocql/gocql"
 )
 
 type Object struct {
@@ -101,13 +101,12 @@ func Download(c *context.Ctx, parametersRaw *json.RawMessage) *context.Response 
 }
 
 type SearchParameters struct {
-	SHA256      string `json:"sha256"`
-	SHA1        string `json:"sha1"`
-	MD5         string `json:"md5"`
-	MIME        string `json:"mime"`
-	Source      string `json:"source"`
-	ObjName     string `json:"obj_name"`
-	Submissions string `json:"submissions"`
+	SHA256    string `json:"sha256"`
+	MD5       string `json:"md5"`
+	Hash      string `json:"hash"`
+	MIME      string `json:"mime"`
+	Limit     string `json:"limit"`
+	Filtering string `json:"filtering"`
 }
 
 func Search(c *context.Ctx, parametersRaw *json.RawMessage) *context.Response {
@@ -117,18 +116,50 @@ func Search(c *context.Ctx, parametersRaw *json.RawMessage) *context.Response {
 		return &context.Response{Error: err.Error()}
 	}
 
-	// since there is only an index on the SHA256
-	// we need to cycle trough everything to filter
-	// for other fields...
 	objects := []*Object{}
 	object := &Object{}
 
-	var q *gocql.Query
-	if p.SHA256 != "" {
-		q = c.C.Query(`SELECT * FROM objects WHERE sha256 = ?`, p.SHA256)
-	} else {
-		q = c.C.Query(`SELECT * FROM objects`)
+	var whereStmt []string
+	var whereStmtValues []interface{}
+
+	if len(p.Hash) == 64 {
+		p.SHA256 = p.Hash
+	} else if len(p.Hash) == 32 {
+		p.MD5 = p.Hash
 	}
+
+	if p.SHA256 != "" {
+		whereStmt = append(whereStmt, "sha256 = ?")
+		whereStmtValues = append(whereStmtValues, p.SHA256)
+	}
+
+	if p.MD5 != "" {
+		whereStmt = append(whereStmt, "md5 = ?")
+		whereStmtValues = append(whereStmtValues, p.MD5)
+	}
+
+	if p.MIME != "" {
+		whereStmt = append(whereStmt, "mime = ?")
+		whereStmtValues = append(whereStmtValues, p.MIME)
+	}
+
+	limit, err := strconv.Atoi(p.Limit)
+	if limit == 0 || err != nil {
+		limit = 100
+	}
+
+	where := ""
+	if len(whereStmt) > 0 {
+		where = " WHERE " + strings.Join(whereStmt, " AND ")
+	}
+
+	where += " LIMIT " + strconv.Itoa(limit)
+
+	if p.Filtering == "on" {
+		where += " ALLOW FILTERING"
+	}
+
+	q := c.C.Query("SELECT * FROM objects"+where, whereStmtValues...)
 
 	iter := q.Iter()
 	for iter.Scan(
@@ -140,41 +171,6 @@ func Search(c *context.Ctx, parametersRaw *json.RawMessage) *context.Response {
 		&object.Source,
 		&object.Submissions,
 	) {
-		if p.SHA256 != "" && object.SHA256 != p.SHA256 {
-			object = &Object{}
-			continue
-		}
-
-		if p.MD5 != "" && object.MD5 != p.MD5 {
-			object = &Object{}
-			continue
-		}
-
-		if p.MIME != "" && object.MIME != p.MIME {
-			object = &Object{}
-			continue
-		}
-
-		if p.SHA1 != "" && object.SHA1 != p.SHA1 {
-			object = &Object{}
-			continue
-		}
-
-		if p.ObjName != "" && !stringInSlice(p.ObjName, object.ObjName) {
-			object = &Object{}
-			continue
-		}
-
-		if p.Source != "" && !stringInSlice(p.Source, object.Source) {
-			object = &Object{}
-			continue
-		}
-
-		if p.Submissions != "" && !stringInSlice(p.Submissions, object.Submissions) {
-			object = &Object{}
-			continue
-		}
-
 		objects = append(objects, object)
 		object = &Object{}
 	}

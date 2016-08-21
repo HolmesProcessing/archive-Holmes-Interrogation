@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/HolmesProcessing/Holmes-Interrogation/context"
-	"github.com/HolmesProcessing/Holmes-Interrogation/router"
+	"github.com/cynexit/Holmes-Interrogation/context"
+	"github.com/cynexit/Holmes-Interrogation/router"
 )
 
 var (
@@ -36,6 +36,8 @@ func httpGenericRequestHandler(w http.ResponseWriter, r *http.Request) {
 		err500(w, r, err)
 		return
 	}
+
+	ctx.Debug.Printf("Request: %+v\n", cReq)
 
 	j, err := json.Marshal(router.Route(ctx, &cReq))
 	if err != nil {

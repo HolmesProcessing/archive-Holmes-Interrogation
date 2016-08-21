@@ -2,10 +2,11 @@ package results
 
 import (
 	"encoding/json"
+	"strconv"
 	"strings"
 	"time"
 
-	"github.com/HolmesProcessing/Holmes-Interrogation/context"
+	"github.com/cynexit/Holmes-Interrogation/context"
 
 	"github.com/gocql/gocql"
 )
@@ -93,12 +94,14 @@ func Get(c *context.Ctx, parametersRaw *json.RawMessage) *context.Response {
 }
 
 type SearchParameters struct {
-	SHA256        string `json:"sha256"`
-	ServiceName   string `json:"service_name"`
-	StartedStart  string `json:"started_start"`
-	StartedStop   string `json:"started_stop"`
-	FinishedStart string `json:"finished_start"`
-	FinishedStop  string `json:"finished_stop"`
+	SHA256        string
+	ServiceName   string
+	StartedStart  string
+	StartedStop   string
+	FinishedStart string
+	FinishedStop  string
+	Limit         string
+	Filtering     string
 }
 
 func Search(c *context.Ctx, parametersRaw *json.RawMessage) *context.Response {
@@ -124,22 +127,56 @@ func Search(c *context.Ctx, parametersRaw *json.RawMessage) *context.Response {
 		whereStmtValues = append(whereStmtValues, p.ServiceName)
 	}
 
-	if p.StartedStart != "" && p.StartedStop != "" {
-		whereStmt = append(whereStmt, "started_date_time >= ? AND started_date_time <= ?")
-		whereStmtValues = append(whereStmtValues, p.StartedStart)
-		whereStmtValues = append(whereStmtValues, p.StartedStop)
+	if p.StartedStart != "" {
+		if t, err := time.Parse("2006-01-02 15:04:05", p.StartedStart); err == nil {
+			whereStmt = append(whereStmt, "started_date_time > ?")
+			whereStmtValues = append(whereStmtValues, t)
+		} else {
+			return &context.Response{Error: err.Error()}
+		}
 	}
 
-	if p.FinishedStart != "" && p.FinishedStop != "" {
-		whereStmt = append(whereStmt, "finished_date_time >= ? AND finished_date_time <= ?")
-		whereStmtValues = append(whereStmtValues, p.FinishedStart)
-		whereStmtValues = append(whereStmtValues, p.FinishedStop)
+	if p.StartedStop != "" {
+		if t, err := time.Parse("2006-01-02 15:04:05", p.StartedStop); err == nil {
+			whereStmt = append(whereStmt, "started_date_time < ?")
+			whereStmtValues = append(whereStmtValues, t)
+		} else {
+			return &context.Response{Error: err.Error()}
+		}
+	}
+
+	if p.FinishedStart != "" {
+		if t, err := time.Parse("2006-01-02 15:04:05", p.FinishedStart); err == nil {
+			whereStmt = append(whereStmt, "finished_date_time > ?")
+			whereStmtValues = append(whereStmtValues, t)
+		} else {
+			return &context.Response{Error: err.Error()}
+		}
+	}
+
+	if p.FinishedStop != "" {
+		if t, err := time.Parse("2006-01-02 15:04:05", p.FinishedStop); err == nil {
+			whereStmt = append(whereStmt, "finished_date_time < ?")
+			whereStmtValues = append(whereStmtValues, t)
+		} else {
+			return &context.Response{Error: err.Error()}
+		}
+	}
+
+	limit, err := strconv.Atoi(p.Limit)
+	if limit == 0 || err != nil {
+		limit = 100
 	}
 
 	where := ""
 	if len(whereStmt) > 0 {
-		where = " WHERE "
-		where += strings.Join(whereStmt, " AND ")
+		where = " WHERE " + strings.Join(whereStmt, " AND ")
+	}
+
+	where += " LIMIT " + strconv.Itoa(limit)
+
+	if p.Filtering == "on" {
+		where += " ALLOW FILTERING"
 	}
 
 	// TODO: fix results, make everything lower case and revisit this statement

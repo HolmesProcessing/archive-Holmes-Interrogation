@@ -14,15 +14,22 @@ We also current only support a Service for API interaction.
 
 ## Compilation
 
+After cloning this project you can simple build it using `go build` or `go install`. This requires a configured and working [Go environment](https://golang.org/doc/install) and the following packages:
+
+    go get github.com/aws/aws-sdk-go
+    go get github.com/gocql/gocql
+
 
 ## Installation
+
+You can deploy the binary everywhere you want, per default it is statically linked and does not need any libraries on the machine.
+
+Next up you need to fill the `config.json.example` with your own values and rename it to `config.json`, after this simply execute the binary.
 
 
 ### Dependencies
 
-After cloning this project you can simple build it using `go build` or `go install`. This requires a configured and working [Go environment](https://golang.org/doc/install).
-
-Next up you need to fill the `config.json.example` with your own values and rename it to `config.json`.
+All necessary dependencies can be found in the `Compilation` section.
 
 
 ## Usage
