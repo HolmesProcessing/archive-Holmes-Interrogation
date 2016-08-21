@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/cynexit/Holmes-Interrogation/context"
+	"github.com/HolmesProcessing/Holmes-Interrogation/context"
 
 	"github.com/gocql/gocql"
 )

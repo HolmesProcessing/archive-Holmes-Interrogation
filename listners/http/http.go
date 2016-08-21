@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/cynexit/Holmes-Interrogation/context"
-	"github.com/cynexit/Holmes-Interrogation/router"
+	"github.com/HolmesProcessing/Holmes-Interrogation/context"
+	"github.com/HolmesProcessing/Holmes-Interrogation/router"
 )
 
 var (
