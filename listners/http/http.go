@@ -37,6 +37,8 @@ func httpGenericRequestHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	ctx.Debug.Printf("Request: %+v\n", cReq)
+
 	j, err := json.Marshal(router.Route(ctx, &cReq))
 	if err != nil {
 		err500(w, r, err)
