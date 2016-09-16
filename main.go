@@ -52,7 +52,9 @@ type config struct {
 	RoutingKey    string
 	PrefetchCount int
 
-	HTTP string
+	HTTP    string
+	SSLCert string
+	SSLKey  string
 }
 
 func main() {
@@ -97,7 +99,7 @@ func main() {
 	ctx.Info.Println("Connected to S3:", conf.ObjStorage)
 
 	// start HTTP server
-	http.Start(ctx, conf.HTTP)
+	http.Start(ctx, conf.HTTP, conf.SSLCert, conf.SSLKey)
 
 	// start to listen via AMQP
 	//initAMQP(conf.AMQP, conf.Queue, conf.RoutingKey, conf.PrefetchCount)
