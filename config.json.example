@@ -40,5 +40,7 @@
     "RoutingKey": "*.holmes.api",
     "PrefetchCount": 10,
 
-    "HTTP": ":8018"
+    "HTTP": ":8018",
+    "SSLCert": "/path/to/tls.crt",
+    "SSLKey": "/path/to/tls.key"
 }
