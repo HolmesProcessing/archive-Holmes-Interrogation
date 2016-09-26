@@ -119,7 +119,7 @@ func Search(c *context.Ctx, parametersRaw *json.RawMessage) *context.Response {
 
 	if p.SHA256 != "" {
 		whereStmt = append(whereStmt, "sha256 = ?")
-		whereStmtValues = append(whereStmtValues, strings.ToUpper(p.SHA256))
+		whereStmtValues = append(whereStmtValues, p.SHA256)
 	}
 
 	if p.ServiceName != "" {
