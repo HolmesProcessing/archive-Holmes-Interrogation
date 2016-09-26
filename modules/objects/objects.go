@@ -45,7 +45,7 @@ func Get(c *context.Ctx, parametersRaw *json.RawMessage) *context.Response {
 	object := &Object{}
 
 	// TODO: fix results, make everything lower case and revisit this statement
-	err = c.C.Query(`SELECT * FROM objects WHERE sha256 = ?`, strings.ToLower(p.SHA256)).Scan(
+	err = c.C.Query(`SELECT * FROM objects WHERE sha256 = ?`, p.SHA256).Scan(
 		&object.SHA256,
 		&object.MD5,
 		&object.MIME,
